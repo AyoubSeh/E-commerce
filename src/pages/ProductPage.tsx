@@ -72,6 +72,9 @@ const ProductPage: React.FC = () => {
     }).format(price);
   };
 
+  // Deterministic review count (stable across re-renders)
+  const reviewCount = 80 + Math.round(product.rating * 180) + (product.name.length * 17) % 700;
+
   // Mock multiple images for demo
   const productImages = [
     product.image_url,
@@ -90,25 +93,27 @@ const ProductPage: React.FC = () => {
         <span>Retour</span>
       </button>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
         {/* Product Images */}
-        <div className="space-y-4">
-          <div className="aspect-square rounded-lg overflow-hidden bg-gray-100">
+        <div className="lg:sticky lg:top-24 space-y-3 sm:space-y-4">
+          <div className="aspect-square rounded-2xl overflow-hidden bg-gray-100 border border-gray-100 shadow-card">
             <img
               src={productImages[selectedImage]}
               alt={product.name}
               className="w-full h-full object-cover"
             />
           </div>
-          
+
           {productImages.length > 1 && (
-            <div className="flex space-x-2">
+            <div className="grid grid-cols-4 gap-2 sm:gap-3">
               {productImages.map((image, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedImage(index)}
-                  className={`w-20 h-20 rounded-lg overflow-hidden border-2 ${
-                    selectedImage === index ? 'border-primary-600' : 'border-gray-200'
+                  className={`aspect-square rounded-xl overflow-hidden border-2 transition-all ${
+                    selectedImage === index
+                      ? 'border-primary-600 ring-2 ring-primary-100'
+                      : 'border-gray-200 hover:border-primary-300'
                   }`}
                 >
                   <img
@@ -125,71 +130,72 @@ const ProductPage: React.FC = () => {
         {/* Product Info */}
         <div className="space-y-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <span className="inline-block text-xs font-medium text-primary-700 bg-primary-50 px-3 py-1 rounded-full capitalize mb-3">
+              {product.category}
+            </span>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 tracking-tight mb-3">
               {product.name}
             </h1>
-            
-            <div className="flex items-center space-x-4 mb-4">
+
+            <div className="flex items-center gap-3 mb-5">
               <div className="flex items-center">
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
-                    size={20}
-                    className={i < Math.floor(product.rating) 
-                      ? 'text-yellow-400 fill-current' 
+                    size={18}
+                    className={i < Math.floor(product.rating)
+                      ? 'text-yellow-400 fill-current'
                       : 'text-gray-300'
                     }
                   />
                 ))}
               </div>
-              <span className="text-gray-600">
-                ({product.rating.toFixed(1)}) • {Math.floor(Math.random() * 1000) + 100} avis
+              <span className="text-sm text-gray-500">
+                ({product.rating.toFixed(1)}) • {reviewCount} avis
               </span>
             </div>
 
-            <div className="text-3xl font-bold text-primary-600 mb-4">
+            <div className="text-3xl sm:text-4xl font-extrabold gradient-text mb-5">
               {formatPrice(product.price)}
             </div>
 
-            <p className="text-gray-700 text-lg leading-relaxed">
+            <p className="text-gray-600 leading-relaxed">
               {product.description}
             </p>
           </div>
 
           {/* Stock Status */}
-          <div className="flex items-center space-x-2">
-            <div className={`w-3 h-3 rounded-full ${
+          <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium ${
+            product.stock > 10 ? 'bg-success-50 text-success-600' :
+            product.stock > 0 ? 'bg-warning-50 text-warning-600' :
+            'bg-error-50 text-error-600'
+          }`}>
+            <span className={`w-2 h-2 rounded-full ${
               product.stock > 10 ? 'bg-success-500' :
               product.stock > 0 ? 'bg-warning-500' :
               'bg-error-500'
-            }`}></div>
-            <span className={`font-medium ${
-              product.stock > 10 ? 'text-success-600' :
-              product.stock > 0 ? 'text-warning-600' :
-              'text-error-600'
-            }`}>
-              {product.stock > 10 ? 'En stock' :
-               product.stock > 0 ? `Plus que ${product.stock} en stock` :
-               'Rupture de stock'}
-            </span>
+            }`} />
+            {product.stock > 10 ? 'En stock' :
+             product.stock > 0 ? `Plus que ${product.stock} en stock` :
+             'Rupture de stock'}
           </div>
 
           {/* Quantity Selector */}
-          <div className="flex items-center space-x-4">
-            <label className="text-gray-700 font-medium">Quantité:</label>
-            <div className="flex items-center border border-gray-300 rounded-lg">
+          <div className="flex items-center gap-4">
+            <span className="text-gray-700 font-medium">Quantité</span>
+            <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="px-3 py-2 text-gray-600 hover:text-gray-800"
+                className="px-4 py-2.5 text-gray-600 hover:bg-gray-50 transition-colors"
               >
-                -
+                −
               </button>
-              <span className="px-4 py-2 border-x border-gray-300">
+              <span className="px-5 py-2.5 border-x border-gray-200 font-medium min-w-[56px] text-center">
                 {quantity}
               </span>
               <button
                 onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                className="px-3 py-2 text-gray-600 hover:text-gray-800"
+                className="px-4 py-2.5 text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-40"
                 disabled={quantity >= product.stock}
               >
                 +
@@ -198,22 +204,22 @@ const ProductPage: React.FC = () => {
           </div>
 
           {/* Action Buttons */}
-          <div className="space-y-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={handleBuyNow}
               disabled={product.stock === 0}
-              className="w-full btn-primary text-lg py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-primary flex-1 text-base py-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
             >
-              Buy Now - {formatPrice(product.price * quantity)}
+              Acheter — {formatPrice(product.price * quantity)}
             </button>
-            
+
             <button
               onClick={handleAddToCart}
               disabled={product.stock === 0}
-              className="w-full btn-secondary text-lg py-3 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-secondary flex-1 text-base py-3 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <ShoppingCart size={20} />
-              <span>Ajouter au panier</span>
+              <ShoppingCart size={20} className="mr-2" />
+              Ajouter au panier
             </button>
           </div>
 
@@ -233,18 +239,18 @@ const ProductPage: React.FC = () => {
           {/* Product Details */}
           <div className="pt-6 border-t border-gray-200">
             <h3 className="text-lg font-semibold mb-4">Détails du produit</h3>
-            <dl className="space-y-2">
-              <div className="flex">
-                <dt className="text-gray-600 w-24">Catégorie:</dt>
-                <dd className="text-gray-900 capitalize">{product.category}</dd>
+            <dl className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="bg-gray-50 rounded-xl p-3">
+                <dt className="text-xs text-gray-500 mb-1">Catégorie</dt>
+                <dd className="text-gray-900 font-medium capitalize">{product.category}</dd>
               </div>
-              <div className="flex">
-                <dt className="text-gray-600 w-24">Stock:</dt>
-                <dd className="text-gray-900">{product.stock} unités</dd>
+              <div className="bg-gray-50 rounded-xl p-3">
+                <dt className="text-xs text-gray-500 mb-1">Stock</dt>
+                <dd className="text-gray-900 font-medium">{product.stock} unités</dd>
               </div>
-              <div className="flex">
-                <dt className="text-gray-600 w-24">SKU:</dt>
-                <dd className="text-gray-900">#{product.id.toUpperCase()}</dd>
+              <div className="bg-gray-50 rounded-xl p-3">
+                <dt className="text-xs text-gray-500 mb-1">SKU</dt>
+                <dd className="text-gray-900 font-medium truncate">#{product.id.slice(0, 8).toUpperCase()}</dd>
               </div>
             </dl>
           </div>
