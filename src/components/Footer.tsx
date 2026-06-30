@@ -10,10 +10,10 @@ const Footer: React.FC = () => {
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">S</span>
+              <div className="w-9 h-9 bg-brand-gradient rounded-xl flex items-center justify-center shadow-glow">
+                <span className="text-white font-extrabold text-lg">O</span>
               </div>
-              <span className="text-xl font-bold">Sehoul-Shop</span>
+              <span className="text-xl font-extrabold tracking-tight">Omar_Ze Shop</span>
             </div>
             <p className="text-gray-400 text-sm">
               Votre marketplace de confiance pour tous vos achats en ligne. 
@@ -67,7 +67,7 @@ const Footer: React.FC = () => {
 
         <div className="mt-8 pt-8 border-t border-gray-800 text-center">
           <p className="text-gray-400 text-sm">
-            © 2025 Sehoul-shop. Tous droits réservés. 
+            © 2026 Omar_Ze Shop. Tous droits réservés.
           </p>
         </div>
       </div>

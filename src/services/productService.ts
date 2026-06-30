@@ -1,10 +1,13 @@
 import { supabase } from '../lib/supabase';
 import { Product } from '../types';
 
+// Nom réel de la table dans Supabase (et non 'products')
+const PRODUCTS_TABLE = 'P1_products';
+
 export const productService = {
   async getAllProducts(): Promise<Product[]> {
     const { data, error } = await supabase
-      .from('products')
+      .from(PRODUCTS_TABLE)
       .select('*')
       .order('created_at', { ascending: false });
 
@@ -18,7 +21,7 @@ export const productService = {
 
   async getProductById(id: string): Promise<Product | null> {
     const { data, error } = await supabase
-      .from('products')
+      .from(PRODUCTS_TABLE)
       .select('*')
       .eq('id', id)
       .single();
@@ -33,7 +36,7 @@ export const productService = {
 
   async getProductsByCategory(category: string): Promise<Product[]> {
     const { data, error } = await supabase
-      .from('products')
+      .from(PRODUCTS_TABLE)
       .select('*')
       .eq('category', category)
       .order('created_at', { ascending: false });
@@ -48,7 +51,7 @@ export const productService = {
 
   async searchProducts(query: string): Promise<Product[]> {
     const { data, error } = await supabase
-      .from('products')
+      .from(PRODUCTS_TABLE)
       .select('*')
       .or(`name.ilike.%${query}%,description.ilike.%${query}%`)
       .order('created_at', { ascending: false });

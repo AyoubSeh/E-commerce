@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,31 +7,37 @@
 @layer base {
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: #1f2937;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply inline-flex items-center justify-center bg-brand-gradient text-white font-semibold py-2.5 px-5 rounded-xl shadow-glow transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover active:translate-y-0;
   }
-  
+
   .btn-secondary {
-    @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply inline-flex items-center justify-center bg-white border border-gray-200 text-gray-800 font-semibold py-2.5 px-5 rounded-xl shadow-sm transition-all duration-200 hover:border-primary-300 hover:text-primary-700 hover:-translate-y-0.5;
   }
-  
+
   .btn-success {
-    @apply bg-success-500 hover:bg-success-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply inline-flex items-center justify-center bg-success-500 hover:bg-success-600 text-white font-semibold py-2.5 px-5 rounded-xl transition-colors duration-200;
   }
-  
+
   .btn-warning {
-    @apply bg-warning-500 hover:bg-warning-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply inline-flex items-center justify-center bg-warning-500 hover:bg-warning-600 text-white font-semibold py-2.5 px-5 rounded-xl transition-colors duration-200;
   }
-  
+
   .card {
-    @apply bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200;
+    @apply bg-white rounded-2xl border border-gray-100 shadow-card transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1;
   }
-  
+
   .input-field {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+    @apply w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 transition-shadow duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/60 focus:border-transparent;
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-brand-gradient;
   }
 }

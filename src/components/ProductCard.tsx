@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, Star } from 'lucide-react';
+import { ShoppingCart, Star, Heart } from 'lucide-react';
 import { Product } from '../types';
 import { useCart } from '../contexts/CartContext';
 
@@ -24,84 +24,87 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   return (
-    <div className="card group animate-fade-in">
+    <div className="card group flex flex-col overflow-hidden animate-fade-in">
       <Link to={`/product/${product.id}`} className="block">
-        <div className="relative overflow-hidden rounded-t-lg">
+        <div className="relative aspect-square overflow-hidden bg-gray-100">
           <img
             src={product.image_url}
             alt={product.name}
-            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+            loading="lazy"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
+          {/* Hover overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+          {/* Wishlist button */}
+          <button
+            onClick={(e) => e.preventDefault()}
+            className="absolute top-3 right-3 h-9 w-9 grid place-items-center rounded-full bg-white/90 backdrop-blur text-gray-600 shadow-sm opacity-0 group-hover:opacity-100 hover:text-accent-600 transition-all duration-300"
+            aria-label="Ajouter aux favoris"
+          >
+            <Heart size={16} />
+          </button>
+
+          {/* Stock badges */}
           {product.stock < 10 && product.stock > 0 && (
-            <div className="absolute top-2 right-2 bg-warning-500 text-white px-2 py-1 rounded-full text-xs">
+            <span className="absolute top-3 left-3 bg-warning-500 text-white px-2.5 py-1 rounded-full text-xs font-semibold shadow-sm">
               Stock limité
-            </div>
+            </span>
           )}
           {product.stock === 0 && (
-            <div className="absolute top-2 right-2 bg-error-500 text-white px-2 py-1 rounded-full text-xs">
+            <span className="absolute top-3 left-3 bg-error-500 text-white px-2.5 py-1 rounded-full text-xs font-semibold shadow-sm">
               Rupture
-            </div>
+            </span>
           )}
-        </div>
-
-        <div className="p-4">
-          <h3 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">
-            {product.name}
-          </h3>
-          
-          <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-            {product.description}
-          </p>
-
-          <div className="flex items-center mb-3">
-            <div className="flex items-center">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  size={16}
-                  className={i < Math.floor(product.rating) 
-                    ? 'text-yellow-400 fill-current' 
-                    : 'text-gray-300'
-                  }
-                />
-              ))}
-            </div>
-            <span className="ml-2 text-sm text-gray-600">
-              ({product.rating.toFixed(1)})
-            </span>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="text-xl font-bold text-primary-600">
-              {formatPrice(product.price)}
-            </div>
-            <span className="text-sm text-gray-500">
-              {product.category}
-            </span>
-          </div>
         </div>
       </Link>
 
-      <div className="px-4 pb-4 space-y-2">
+      <div className="p-4 flex flex-col flex-1">
+        <Link to={`/product/${product.id}`} className="block">
+          <div className="flex items-center gap-1.5 mb-1.5">
+            <div className="flex items-center text-yellow-400">
+              <Star size={14} className="fill-current" />
+            </div>
+            <span className="text-xs font-medium text-gray-600">
+              {product.rating.toFixed(1)}
+            </span>
+            <span className="text-xs text-primary-700 bg-primary-50 px-2 py-0.5 rounded-full capitalize ml-auto">
+              {product.category}
+            </span>
+          </div>
+
+          <h3 className="font-semibold text-gray-900 line-clamp-1 group-hover:text-primary-700 transition-colors">
+            {product.name}
+          </h3>
+          <p className="text-gray-500 text-sm mt-1 mb-3 line-clamp-2">
+            {product.description}
+          </p>
+        </Link>
+
+        <div className="mt-auto flex items-center justify-between gap-2">
+          <div className="text-xl font-extrabold gradient-text">
+            {formatPrice(product.price)}
+          </div>
+          <button
+            onClick={handleAddToCart}
+            disabled={product.stock === 0}
+            aria-label="Ajouter au panier"
+            className={`h-10 w-10 grid place-items-center rounded-xl transition-all duration-200 ${
+              product.stock === 0
+                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                : 'bg-gray-100 text-gray-700 hover:bg-brand-gradient hover:text-white hover:shadow-glow hover:-translate-y-0.5'
+            }`}
+          >
+            <ShoppingCart size={18} />
+          </button>
+        </div>
+
         <a
           href={product.le_lien}
-          className="w-full btn-primary block text-center"
+          className="btn-primary w-full mt-3 text-sm"
         >
-          Buy Now
+          Acheter maintenant
         </a>
-        
-        <button
-          onClick={handleAddToCart}
-          disabled={product.stock === 0}
-          className={`w-full flex items-center justify-center space-x-2 py-2 px-4 rounded-lg transition-colors ${
-            product.stock === 0
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-          }`}
-        >
-          <ShoppingCart size={16} />
-          <span>Ajouter au panier</span>
-        </button>
       </div>
     </div>
   );

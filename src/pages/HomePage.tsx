@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { Truck, ShieldCheck, RotateCcw, Headphones } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { Product } from '../types';
@@ -57,18 +58,49 @@ const HomePage: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Hero Section */}
       {!searchQuery && (
-        <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-lg text-white p-8 mb-8">
-          <div className="max-w-2xl">
-            <h1 className="text-4xl font-bold mb-4">
+        <div className="relative overflow-hidden bg-brand-gradient rounded-3xl text-white p-8 sm:p-12 mb-10 shadow-glow">
+          {/* Decorative blurred circles */}
+          <div className="pointer-events-none absolute -top-16 -right-10 w-64 h-64 bg-white/10 rounded-full blur-3xl animate-float" />
+          <div className="pointer-events-none absolute -bottom-20 -left-10 w-72 h-72 bg-accent-500/30 rounded-full blur-3xl" />
+          <div className="relative max-w-2xl animate-slide-up">
+            <span className="inline-block bg-white/15 backdrop-blur-sm text-white/90 text-sm font-medium px-3 py-1 rounded-full mb-4">
+              ✨ Nouveautés chaque semaine
+            </span>
+            <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
               Découvrez nos meilleures offres
             </h1>
-            <p className="text-xl text-primary-100 mb-6">
+            <p className="text-lg sm:text-xl text-white/85 mb-8">
               Des milliers de produits de qualité à prix imbattables
             </p>
-            <button className="bg-white text-primary-600 font-semibold py-3 px-6 rounded-lg hover:bg-gray-100 transition-colors">
+            <button className="bg-white text-primary-700 font-semibold py-3 px-7 rounded-xl shadow-lg hover:bg-gray-50 hover:-translate-y-0.5 transition-all duration-200">
               Découvrir maintenant
             </button>
           </div>
+        </div>
+      )}
+
+      {/* Trust / Features strip */}
+      {!searchQuery && (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+          {[
+            { icon: Truck, title: 'Livraison gratuite', desc: 'Dès 50 € d\'achat' },
+            { icon: ShieldCheck, title: 'Paiement sécurisé', desc: 'Via Stripe' },
+            { icon: RotateCcw, title: 'Retours 30 jours', desc: 'Satisfait ou remboursé' },
+            { icon: Headphones, title: 'Support 7j/7', desc: 'Une équipe à l\'écoute' },
+          ].map(({ icon: Icon, title, desc }) => (
+            <div
+              key={title}
+              className="flex items-center gap-3 bg-white border border-gray-100 rounded-2xl p-4 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300"
+            >
+              <div className="h-11 w-11 shrink-0 grid place-items-center rounded-xl bg-primary-50 text-primary-600">
+                <Icon size={20} />
+              </div>
+              <div className="min-w-0">
+                <p className="font-semibold text-gray-900 text-sm truncate">{title}</p>
+                <p className="text-gray-500 text-xs truncate">{desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
@@ -84,6 +116,20 @@ const HomePage: React.FC = () => {
         </div>
       )}
 
+      {/* Section header */}
+      {!searchQuery && (
+        <div className="flex items-end justify-between mb-5">
+          <div>
+            <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight">
+              Nos produits
+            </h2>
+            <p className="text-gray-500 text-sm mt-1">
+              {products.length} article{products.length > 1 ? 's' : ''} disponible{products.length > 1 ? 's' : ''}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Category Filter */}
       <div className="mb-8">
         <div className="flex flex-wrap gap-2">
@@ -91,10 +137,10 @@ const HomePage: React.FC = () => {
             <button
               key={category.id}
               onClick={() => setSelectedCategory(category.id)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                 selectedCategory === category.id
-                  ? 'bg-primary-600 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? 'bg-brand-gradient text-white shadow-glow'
+                  : 'bg-white border border-gray-200 text-gray-700 hover:border-primary-300 hover:text-primary-700'
               }`}
             >
               {category.name}
@@ -106,8 +152,10 @@ const HomePage: React.FC = () => {
       {/* Products Grid */}
       {products.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-         {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+         {products.map((product, index) => (
+            <div key={product.id} style={{ animationDelay: `${Math.min(index * 60, 600)}ms` }} className="animate-slide-up">
+              <ProductCard product={product} />
+            </div>
           ))}
         </div>
       ) : (
